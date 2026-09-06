@@ -1,0 +1,148 @@
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  repository: ghcr.io/oronts/refaat
+  pullPolicy: IfNotPresent
+  tag: ""
+  digest: ""
+imagePullSecrets: []
+
+serviceAccount:
+  create: true
+  automount: false
+  annotations: {}
+  name: ""
+
+secret:
+  # The Secret must expose environment-variable keys such as
+  # REFAAT_DATABASE_URL, REFAAT_REDIS_URL, REFAAT_API_KEY_PEPPER,
+  # REFAAT_BOOTSTRAP_TOKEN, and S3 credentials when S3 is enabled.
+  existingSecret: refaat-secrets
+
+config:
+  REFAAT_ENVIRONMENT: production
+  REFAAT_AUTO_CREATE_SCHEMA: "false"
+  REFAAT_BLOB_BACKEND: s3
+  REFAAT_S3_BUCKET: refaat
+  REFAAT_S3_REGION: eu-central-1
+  REFAAT_TRUSTED_HOSTS: '["refaat","localhost","127.0.0.1"]'
+  REFAAT_CORS_ORIGINS: '[]'
+  REFAAT_LOG_JSON: "true"
+  REFAAT_OTEL_ENABLED: "false"
+  REFAAT_OTEL_SERVICE_NAME: refaat
+
+extraEnv: []
+extraEnvFrom: []
+
+api:
+  replicas: 2
+  command: ["refaat-api"]
+  podAnnotations: {}
+  podLabels: {}
+  resources:
+    requests:
+      cpu: 200m
+      memory: 384Mi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  pdb:
+    enabled: true
+    minAvailable: 1
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector: {}
+
+worker:
+  replicas: 2
+  command: ["refaat-worker"]
+  podAnnotations: {}
+  podLabels: {}
+  resources:
+    requests:
+      cpu: 200m
+      memory: 384Mi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+  autoscaling:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 20
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  pdb:
+    enabled: true
+    minAvailable: 1
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+      labelSelector: {}
+
+migration:
+  enabled: true
+  backoffLimit: 3
+  activeDeadlineSeconds: 600
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-weight: "-5"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+  resources:
+    requests:
+      cpu: 100m
+      memory: 192Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+  annotations: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: refaat.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+networkPolicy:
+  enabled: false
+  ingress: []
+  egress: []
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+priorityClassName: ""
+terminationGracePeriodSeconds: 30

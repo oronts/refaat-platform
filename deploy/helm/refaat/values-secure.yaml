@@ -1,0 +1,76 @@
+# Secure-by-default overlay. Install with:
+#   helm install refaat ./deploy/helm/refaat -f values.yaml -f values-secure.yaml
+#
+# This turns on the Kubernetes NetworkPolicy egress backstop (default-deny with an explicit
+# allowlist) and pairs it with the in-library AllowlistEgressPolicy. The two are defense in depth:
+# the in-library policy is the decision and enforcement point at every outbound httpx seam, and the
+# NetworkPolicy is the deployment enforcement point that also covers what the httpx seam does not
+# see (boto3 to S3, OTLP gRPC, any user-injected port). Replace every placeholder CIDR and port with
+# the real values for your cluster before applying; the placeholders are intentionally narrow so an
+# unedited install fails closed rather than allowing broad egress.
+
+networkPolicy:
+  enabled: true
+  ingress:
+    # Allow ingress only from the ingress controller namespace. Replace the label selector.
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
+      ports:
+        - protocol: TCP
+          port: 8000
+  egress:
+    # DNS resolution.
+    - to:
+        - namespaceSelector: {}
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # PostgreSQL (pgvector). Replace with the database CIDR.
+    - to:
+        - ipBlock:
+            cidr: 10.0.0.0/24
+      ports:
+        - protocol: TCP
+          port: 5432
+    # Redis. Replace with the cache CIDR.
+    - to:
+        - ipBlock:
+            cidr: 10.0.1.0/24
+      ports:
+        - protocol: TCP
+          port: 6379
+    # Object store (S3 or S3-compatible endpoint). Replace with the storage CIDR.
+    - to:
+        - ipBlock:
+            cidr: 10.0.2.0/24
+      ports:
+        - protocol: TCP
+          port: 443
+    # Model, embedding, and fine-tuning provider egress over HTTPS. Replace with the provider CIDR.
+    - to:
+        - ipBlock:
+            cidr: 10.0.3.0/24
+      ports:
+        - protocol: TCP
+          port: 443
+    # OTLP collector. Replace with the collector CIDR.
+    - to:
+        - ipBlock:
+            cidr: 10.0.4.0/24
+      ports:
+        - protocol: TCP
+          port: 4317
+
+# The in-library egress allowlist. Set REFAAT_EGRESS_POLICY=allowlist and list every provider host
+# the runtime is allowed to reach. A configured model, embedding, or fine-tuning base_url host that
+# is missing here fails startup, so the host list must include the provider you configured. These
+# merge into the chart's config map alongside the base values.yaml config block.
+config:
+  REFAAT_EGRESS_POLICY: allowlist
+  # REFAAT_EGRESS_ALLOWLIST is a JSON list of {host, port?, schemes?, purposes?} entries, for example:
+  #   [{"host": "api.openai.com", "port": 443, "schemes": ["https"], "purposes": ["model", "fine_tuning"]}]
+  REFAAT_EGRESS_ALLOWLIST: '[]'

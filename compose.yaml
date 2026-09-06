@@ -1,0 +1,174 @@
+name: refaat
+
+x-refaat-environment: &refaat-environment
+  REFAAT_ENVIRONMENT: production
+  REFAAT_DATABASE_URL: postgresql+psycopg://refaat:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/refaat
+  REFAAT_AUTO_CREATE_SCHEMA: "false"
+  REFAAT_REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD}@redis:6379/0
+  REFAAT_BLOB_BACKEND: s3
+  REFAAT_S3_BUCKET: refaat
+  REFAAT_S3_ENDPOINT_URL: http://object-store:8333
+  REFAAT_S3_REGION: ${REFAAT_S3_REGION:-eu-central-1}
+  REFAAT_S3_ACCESS_KEY_ID: ${OBJECT_STORE_ACCESS_KEY_ID:-refaat}
+  REFAAT_S3_SECRET_ACCESS_KEY: ${OBJECT_STORE_SECRET_ACCESS_KEY:?set OBJECT_STORE_SECRET_ACCESS_KEY}
+  REFAAT_API_KEY_PEPPER: ${REFAAT_API_KEY_PEPPER:?set REFAAT_API_KEY_PEPPER}
+  REFAAT_BOOTSTRAP_TOKEN: ${REFAAT_BOOTSTRAP_TOKEN:?set REFAAT_BOOTSTRAP_TOKEN}
+  REFAAT_TRUSTED_HOSTS: '["localhost","127.0.0.1","api"]'
+  REFAAT_CORS_ORIGINS: ${REFAAT_CORS_ORIGINS:-[]}
+  REFAAT_LOG_JSON: "true"
+  REFAAT_OTEL_ENABLED: ${REFAAT_OTEL_ENABLED:-false}
+  REFAAT_OTEL_EXPORTER_ENDPOINT: ${REFAAT_OTEL_EXPORTER_ENDPOINT:-http://otel-collector:4317}
+
+x-refaat-container: &refaat-container
+  image: ${REFAAT_IMAGE:-refaat:local}
+  build:
+    context: .
+    target: runtime
+  read_only: true
+  tmpfs:
+    - /tmp:size=128m,mode=1777
+  cap_drop:
+    - ALL
+  security_opt:
+    - no-new-privileges:true
+  init: true
+  restart: unless-stopped
+  networks:
+    - backend
+
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE:-pgvector/pgvector:pg17}
+    environment:
+      POSTGRES_DB: refaat
+      POSTGRES_USER: refaat
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U refaat -d refaat"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+    networks:
+      - backend
+
+  redis:
+    image: ${REDIS_IMAGE:-redis:7-alpine}
+    command:
+      - sh
+      - -ec
+      - exec redis-server --appendonly yes --requirepass "$${REDIS_PASSWORD}"
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", 'redis-cli -a "$$REDIS_PASSWORD" ping | grep PONG']
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+    networks:
+      - backend
+
+  object-store:
+    image: ${SEAWEEDFS_IMAGE:-chrislusf/seaweedfs:4.29}
+    command: ["mini", "-dir=/data"]
+    environment:
+      AWS_ACCESS_KEY_ID: ${OBJECT_STORE_ACCESS_KEY_ID:-refaat}
+      AWS_SECRET_ACCESS_KEY: ${OBJECT_STORE_SECRET_ACCESS_KEY:?set OBJECT_STORE_SECRET_ACCESS_KEY}
+      S3_BUCKET: refaat
+    volumes:
+      - object_store_data:/data
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --quiet
+        - --spider
+        - http://127.0.0.1:9333/cluster/status
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - backend
+
+  migrate:
+    <<: *refaat-container
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment: *refaat-environment
+    restart: "no"
+
+  api:
+    <<: *refaat-container
+    networks:
+      - backend
+      - egress
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      object-store:
+        condition: service_healthy
+    environment: *refaat-environment
+    ports:
+      - "${REFAAT_BIND_ADDRESS:-127.0.0.1}:${REFAAT_PORT:-8000}:8000"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=2)
+      interval: 10s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
+
+  worker:
+    <<: *refaat-container
+    networks:
+      - backend
+      - egress
+    command: ["refaat-worker"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      object-store:
+        condition: service_healthy
+    # No REFAAT_WORKER_ID here: a hardcoded value would give every scaled replica
+    # (docker compose up --scale worker=N) the same lease identity and re-open the
+    # double-run race. The app's per-process default (hostname-pid-random) makes each
+    # container unique; set REFAAT_WORKER_ID per replica only if you override it.
+    environment: *refaat-environment
+
+  otel-collector:
+    image: ${OTEL_COLLECTOR_IMAGE:-otel/opentelemetry-collector-contrib:0.158.0}
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ./deploy/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+    restart: unless-stopped
+    profiles: ["observability"]
+    networks:
+      - backend
+      - egress
+
+networks:
+  backend:
+    internal: true
+  egress:
+
+
+volumes:
+  postgres_data:
+  redis_data:
+  object_store_data:

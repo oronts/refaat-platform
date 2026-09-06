@@ -1,0 +1,8 @@
+Refaat has been installed.
+
+Service:
+  {{ include "refaat.fullname" . }}.{{ .Release.Namespace }}.svc:{{ .Values.service.port }}
+
+The chart expects Secret {{ .Values.secret.existingSecret | quote }} to contain the required
+REFAAT_* connection and credential variables. Run the migration hook successfully before
+routing traffic, and keep the bootstrap token available only for initial administration.

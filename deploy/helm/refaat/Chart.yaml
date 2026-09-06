@@ -1,0 +1,14 @@
+apiVersion: v2
+name: refaat
+description: Retrieval & Evidence Foundation for Adaptive Agentic Tooling
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+home: https://github.com/oronts/refaat
+sources:
+  - https://github.com/oronts/refaat
+maintainers:
+  - name: Oronts
+    email: office@oronts.com
+annotations:
+  artifacthub.io/license: Apache-2.0
