@@ -1,0 +1,11 @@
+# Oronts Services and Engagement Packages
+
+Oronts GmbH is a Munich-based enterprise software engineering company founded in 2023 by Refaat Al Ktifan. The recurring promise is code you own and no vendor lock-in. The catalog spans eight core services delivered as production-ready systems the client fully owns.
+
+## The Eight Core Services
+
+AI Development builds intelligent systems powered by GPT models, Claude, and custom ML, from chatbots to predictive analytics, covering LLM integration, custom ML, computer vision and OCR, NLP, and AI automation. Custom Software Development takes software end to end from concept to deployment, full-stack for web and enterprise, including cloud-native platforms, system modernization, API development, and microservices. Web Development delivers responsive high-performance web apps that are SEO optimized and speed focused, covering PWA, SPA, SSR, JAMstack, and headless CMS. E-Commerce and PIM builds complete e-commerce ecosystems with Product Information Management for B2B and B2C, including multi-channel, payments, and order management. Mobile Development covers native iOS and Android, cross-platform apps, ASO, push, and offline. Cloud and DevOps delivers cloud-native solutions with automated CI and CD, Kubernetes, infrastructure as code, observability, and cost optimization. Data Engineering turns raw data into insight through pipelines, ETL and ELT, real-time analytics, warehousing, and BI. IT Consulting guides digital transformation through strategy, tech assessment, architecture review, and technical due diligence.
+
+## Engagement Packages
+
+Four packages carry public price anchors. The Discovery Sprint runs two weeks with no commitment and returns a roadmap, architecture recommendations, and estimates. The 90-Day Production Pilot is fixed scope from 25k EUR, taking one real use case to a production system you own. A Project is end to end delivery with milestones, QA, and training from 50k EUR. Managed or retainer engagements, where Oronts builds and runs with SLAs and a roadmap, start from 15k EUR per month. The public anchor: AI engagements from 25k EUR, commerce and custom platform builds from 50k EUR, focused consulting or audit from 15k EUR.

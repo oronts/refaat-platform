@@ -1,0 +1,3 @@
+{"query":"How is a failed application release rolled back?","expected_terms":["previous immutable image","rollback"],"expected_source":"handbook.md"}
+{"query":"What evidence must an answer include?","expected_terms":["chunk citations","retrieved evidence"],"expected_source":"handbook.md"}
+{"query":"Who coordinates a material incident?","expected_terms":["incident commander"],"expected_source":"handbook.md"}

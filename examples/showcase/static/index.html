@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Oronts Knowledge Terminal</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2305070a'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' fill='%2339ff9e' text-anchor='middle'%3E%3E_%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="crt"></div>
+    <div class="wrap">
+      <header class="top">
+        <div class="brand">REFAAT<span class="sub"> // oronts knowledge terminal</span></div>
+        <div class="tagline">grounded retrieval and evidence over the Oronts knowledge base, every answer cites real stored chunks</div>
+        <div class="badge" id="mode-badge">mode: ...</div>
+        <button class="observe" id="observe">observability &gt;_</button>
+      </header>
+
+      <div class="grid">
+        <section class="panel" aria-label="query">
+          <h2>query</h2>
+          <div class="body">
+            <label class="field" for="q">prompt</label>
+            <textarea id="q" spellcheck="false">How do OGuardAI and PimTx fit into Oronts GmbH under Refaat Al Ktifan?</textarea>
+
+            <label class="field">mode</label>
+            <div class="modes" id="modes"></div>
+
+            <div class="controls">
+              <button class="run" id="run">run &gt;_</button>
+              <label class="toggle"><input type="checkbox" id="stream" checked /> stream</label>
+            </div>
+
+            <div class="prompt-hint">try:
+              <code data-q="Which Oronts products exist and what does each one do?">products</code> ·
+              <code data-q="Who founded Oronts GmbH and where is it based?">company</code> ·
+              <code data-q="During a security incident, how does OGuardAI protect sensitive data before it reaches an LLM provider?">incident</code>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="answer">
+          <h2>answer</h2>
+          <div class="body">
+            <div class="answer" id="answer"><span class="empty">awaiting query...</span></div>
+            <div class="meta-line" id="meta"></div>
+            <button class="speak" id="speak" type="button" disabled title="run a query, then read the answer aloud">🔊 speak</button>
+          </div>
+          <h2>how it works</h2>
+          <div class="body">
+            <div class="pipeline" id="pipeline"></div>
+            <div class="pipeline-caption" id="pipeline-caption"><span class="empty">run a query to light up the stages that fired</span></div>
+          </div>
+          <h2>routes fired</h2>
+          <div class="routes" id="routes"><span class="empty">no routes yet</span></div>
+        </section>
+
+        <section class="panel" aria-label="citations">
+          <h2>citations</h2>
+          <div class="body scroll" id="citations"><span class="empty">no citations yet</span></div>
+          <h2>trajectory</h2>
+          <div class="body" id="trajectory"><span class="empty">agent modes only</span></div>
+        </section>
+      </div>
+
+      <div class="grid graphs" style="margin-top:14px">
+        <section class="panel graph-panel" aria-label="graph">
+          <h2>knowledge graph <span class="hint-inline">real extracted entities and relations for this query</span></h2>
+          <div class="body">
+            <div class="graph-stage">
+              <svg id="graph-svg" viewBox="0 0 640 420" preserveAspectRatio="xMidYMid meet" role="img" aria-label="entity relation graph"></svg>
+              <div class="graph-info" id="graph-info"><span class="empty">run a query to render the graph</span></div>
+            </div>
+            <div class="graph-legend" id="graph-legend"></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-label="cache">
+          <h2>caching and savings</h2>
+          <div class="body">
+            <div class="cache-badge" id="cache-badge"><span class="empty">no query yet</span></div>
+            <div class="stat-grid" id="cache-tally"></div>
+            <div class="cache-note" id="cache-note"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="grid stats" style="margin-top:14px">
+        <section class="panel" aria-label="corpus-stats">
+          <h2>corpus</h2>
+          <div class="body"><div class="stat-grid" id="corpus-stats"><span class="empty">loading...</span></div></div>
+        </section>
+        <section class="panel" aria-label="query-stats">
+          <h2>this query</h2>
+          <div class="body"><div class="stat-grid" id="query-stats"><span class="empty">no query yet</span></div></div>
+        </section>
+        <section class="panel" aria-label="session-stats">
+          <h2>session</h2>
+          <div class="body"><div class="stat-grid" id="session-stats"><span class="empty">no queries yet</span></div></div>
+        </section>
+      </div>
+
+      <div class="grid stats" style="margin-top:14px">
+        <section class="panel" style="grid-column: span 2" aria-label="cost">
+          <h2>cost and tokens <span class="hint-inline">real usage the runtime reports, zero offline with the extractive generator</span></h2>
+          <div class="body">
+            <div class="stat-grid" id="cost-stats"><span class="empty">no query yet</span></div>
+            <div class="cache-note" id="cost-note"></div>
+          </div>
+        </section>
+        <section class="panel" aria-label="saved">
+          <h2>saved by caching</h2>
+          <div class="body"><div class="stat-grid" id="saved-stats"><span class="empty">no cache hit yet</span></div></div>
+        </section>
+      </div>
+
+      <div class="grid" style="margin-top:14px">
+        <section class="panel" aria-label="corpus">
+          <h2>knowledge base</h2>
+          <div class="body scroll" id="corpus"><span class="empty">loading...</span></div>
+        </section>
+        <section class="panel" style="grid-column: span 2" aria-label="features">
+          <h2>capabilities</h2>
+          <div id="mode-banner" class="mode-banner"><span class="empty">resolving mode...</span></div>
+          <p style="font-size:11px;line-height:1.5;opacity:0.65;margin:4px 0 8px"><b>no model needed</b>: pure algorithm, no AI, the same result every time, runs offline. <b>uses the model</b>: quality comes from the language model, active while this server is online.</p>
+          <div class="body scroll" id="features"><span class="empty">loading...</span></div>
+        </section>
+      </div>
+
+      <footer>
+        offline deterministic stack: SQLite plus in-process vector search, hash embeddings, extractive generation, co-occurrence graph.
+        set REFAAT_OPENAI_API_KEY to switch generation and embeddings to a real model. no login, no external host.
+      </footer>
+    </div>
+
+    <div class="modal" id="obs-modal" hidden>
+      <div class="modal-backdrop" id="obs-close-bg"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-label="observability">
+        <div class="modal-head">
+          <span>observability <span class="hint-inline">real OpenTelemetry spans, run budget, and the runtime event log</span></span>
+          <button class="modal-x" id="obs-close">close</button>
+        </div>
+        <div class="modal-body">
+          <div class="obs-section-title" id="obs-trace-title">trace</div>
+          <div class="obs-trace" id="obs-trace"><span class="empty">loading...</span></div>
+          <div class="obs-section-title">run budget</div>
+          <div class="stat-grid" id="obs-budget"></div>
+          <div class="obs-section-title">session economics</div>
+          <div class="stat-grid" id="obs-econ"></div>
+          <div class="obs-section-title">event log <span class="hint-inline">real outbox records written at ingestion</span></div>
+          <div class="obs-events" id="obs-events"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

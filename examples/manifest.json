@@ -1,0 +1,467 @@
+[
+  {
+    "script": "01_local_rag_graph_cache.py",
+    "title": "Local RAG, GraphRAG, CAG, and versioned invalidation",
+    "required_keys": [
+      "stats",
+      "retrieval_routes",
+      "graph_facts",
+      "second_cached",
+      "version_after_update"
+    ]
+  },
+  {
+    "script": "02_sessions_feedback.py",
+    "title": "Sessions, compaction, feedback, and user-specific retrieval",
+    "required_keys": [
+      "session_id",
+      "summary",
+      "retained_turns",
+      "profile",
+      "personalized_routes"
+    ]
+  },
+  {
+    "script": "03_rlm_agents_jobs.py",
+    "title": "Bounded RLM, durable agents, mailboxes, and background jobs",
+    "required_keys": [
+      "rlm_nodes",
+      "rlm_usage",
+      "mailbox_message",
+      "background_job_status",
+      "persisted_agent"
+    ]
+  },
+  {
+    "script": "04_evaluations_harness.py",
+    "title": "Evaluations, evidence-backed harness proposals, activation, and rollback",
+    "required_keys": [
+      "suite_id",
+      "run_id",
+      "metrics",
+      "proposal",
+      "active_after_rollback"
+    ]
+  },
+  {
+    "script": "05_programmatic_extensions.py",
+    "title": "Custom connectors, extractors, skills, and event sinks",
+    "required_keys": [
+      "ingestion",
+      "checklist",
+      "events"
+    ]
+  },
+  {
+    "script": "06_live_api_sdk.py",
+    "title": "Real Uvicorn server with synchronous and asynchronous SDK clients",
+    "required_keys": [
+      "base_url",
+      "workspace_id",
+      "corpus_id",
+      "second_cached",
+      "stream_delta_count",
+      "stream_answer_grounded",
+      "async"
+    ]
+  },
+  {
+    "script": "07_cli_workflow.py",
+    "title": "Persistent command-line workflow across independent processes",
+    "required_keys": [
+      "doctor",
+      "workspace_id",
+      "corpus_id",
+      "document_id",
+      "evaluation_metrics",
+      "skills"
+    ]
+  },
+  {
+    "script": "08_framework_integrations.py",
+    "title": "Framework-neutral, CrewAI, LangChain, and LlamaIndex adapters",
+    "required_keys": [
+      "corpus_id",
+      "framework_neutral_documents",
+      "crewai_tool_name",
+      "grounded_answer_present",
+      "langgraph_answer_present",
+      "langgraph_citation_count",
+      "optional"
+    ]
+  },
+  {
+    "script": "09_typed_program.py",
+    "title": "Typed programs: signatures, content-addressed artifacts, and grounded execution",
+    "required_keys": [
+      "program",
+      "artifact_id",
+      "grounded",
+      "citations",
+      "second_cached",
+      "programs"
+    ]
+  },
+  {
+    "script": "10_program_evaluation.py",
+    "title": "Native program evaluation: content-addressed datasets, metrics, and bundles",
+    "required_keys": [
+      "program",
+      "dataset_version",
+      "case_count",
+      "hard_constraints_passed",
+      "score",
+      "aggregate"
+    ]
+  },
+  {
+    "script": "11_program_optimization.py",
+    "title": "Native retrieval-policy optimization: deterministic candidate search and ranking",
+    "required_keys": [
+      "program",
+      "dataset_version",
+      "candidate_count",
+      "improvement",
+      "best"
+    ]
+  },
+  {
+    "script": "12_program_registry.py",
+    "title": "Durable program registry: content-addressed artifacts, promotion, and atomic rollback",
+    "required_keys": [
+      "base_artifact",
+      "tuned_artifact",
+      "rolled_back_to",
+      "resolved_base_after_rollback",
+      "history_length"
+    ]
+  },
+  {
+    "script": "13_durable_evaluation.py",
+    "title": "Durable program evaluation as a background worker job",
+    "required_keys": [
+      "job_id",
+      "job_status",
+      "program",
+      "case_count",
+      "hard_constraints_passed"
+    ]
+  },
+  {
+    "script": "14_full_rag_gauntlet.py",
+    "title": "Full-library RAG gauntlet across ingestion, retrieval, programs, evaluation, optimization, and registry",
+    "required_keys": [
+      "documents_ingested",
+      "rag_grounded",
+      "cache_hit",
+      "linear_uncached",
+      "metadata_scoped",
+      "autocut_ok",
+      "subquery_routes",
+      "compression_tokens_dropped",
+      "graph_facts",
+      "hierarchical_citations_ok",
+      "contextual_retrieval_ok",
+      "program_grounded",
+      "fewshot_candidates",
+      "knn_grounded",
+      "ensemble_grounded",
+      "react_steps",
+      "policy_best_of_ok",
+      "evaluation_score",
+      "optimization_candidates",
+      "pareto_size",
+      "registry_promoted",
+      "registry_rolled_back"
+    ]
+  },
+  {
+    "script": "15_program_as_skill_trajectory.py",
+    "title": "Program-as-skill: a promoted program as a governed tool, scored with a trajectory bundle",
+    "required_keys": [
+      "pinned_artifact_id",
+      "authorized_tools",
+      "denied_tools",
+      "trajectory_score",
+      "hard_constraints_passed"
+    ]
+  },
+  {
+    "script": "16_reference_app.py",
+    "title": "Reference application: the whole library end to end over one corpus, with LangChain and LangGraph",
+    "required_keys": [
+      "rag_answer",
+      "rag_citations",
+      "cache_hit",
+      "graph_answer",
+      "structured_valid",
+      "agent_authorized_tools",
+      "agent_denied_tools",
+      "eval_grounded",
+      "optimize_pareto_size",
+      "registry_env",
+      "langchain_answer",
+      "langgraph_final"
+    ]
+  },
+  {
+    "script": "17_durable_optimization.py",
+    "title": "Durable and resumable optimization: a checkpointed run on the worker, byte-identical to the synchronous optimize()",
+    "required_keys": [
+      "run_id",
+      "run_status",
+      "candidate_total",
+      "candidate_count",
+      "best_artifact_id",
+      "matches_synchronous",
+      "registered_best_program"
+    ]
+  },
+  {
+    "script": "18_showcase_rag.py",
+    "title": "Oronts showcase: the full retrieval feature set over Oronts content, offline and deterministic",
+    "required_keys": [
+      "mode",
+      "documents_ingested",
+      "plain_rag_grounded",
+      "cache_hit",
+      "graphrag_ok",
+      "kag_grounded",
+      "feature_routes",
+      "reranked_ok",
+      "autocut_ok",
+      "crag_grounded",
+      "self_rag_grounded",
+      "rlm_grounded",
+      "metadata_filter_ok",
+      "compression_tokens_dropped",
+      "transforms",
+      "hierarchical_ok",
+      "contextual_grounded",
+      "contextual_effect",
+      "abstain",
+      "abstain_ok",
+      "abstain_disabled_unchanged",
+      "citation_contract_ok",
+      "programs",
+      "program_layer_grounded",
+      "agents",
+      "agent_layer_grounded",
+      "mcp",
+      "mcp_layer_ok",
+      "registry_register_not_promote",
+      "registry_rollback_atomic",
+      "denied_tool_recorded",
+      "pareto_non_empty",
+      "durable_optimization_ok",
+      "program_evaluation_ok",
+      "model_cache_budget_ok",
+      "shadow_canary_ok",
+      "fine_tuning",
+      "fine_tuning_ok",
+      "multimodal",
+      "multimodal_ok",
+      "sandboxed_rlm",
+      "sandboxed_rlm_ok",
+      "multi_agent_routes_differ",
+      "program_as_skill_ok",
+      "optimizer_output_registered",
+      "cross_encoder_ok",
+      "model_function_calling_ok",
+      "streaming_tool_calls_ok",
+      "llm_judge_ok",
+      "real_integrations_ok",
+      "http_ui_ok",
+      "http_ui_no_login",
+      "http_ui_no_external_host",
+      "http_healthz",
+      "http_modes_all_grounded",
+      "http_react_governed",
+      "http_graphrag_route",
+      "http_corpus_count",
+      "http_features_ok",
+      "http_graph_ok",
+      "http_stats_ok",
+      "http_query_enriched",
+      "http_query_cache_hit",
+      "http_query_cost_zero_offline",
+      "http_query_saved_keys",
+      "http_cache_saved_zero_offline",
+      "http_observability",
+      "http_observability_ok",
+      "http_program_grounded",
+      "http_registry_ok",
+      "http_stream_delta_count",
+      "http_stream_grounded",
+      "features_exercised"
+    ],
+    "timeout_seconds": 180
+  },
+  {
+    "script": "19_governed_fine_tuning.py",
+    "title": "Governed fine-tuning: request, approve, durable run, immutable registration, never auto-promoted",
+    "required_keys": [
+      "run_id",
+      "created_status",
+      "created_approved",
+      "refused_without_approval",
+      "run_status",
+      "approved_by",
+      "model_ref",
+      "model_ref_deterministic",
+      "provenance_trained",
+      "provenance_recorded",
+      "artifact_registered",
+      "not_auto_promoted"
+    ]
+  },
+  {
+    "script": "20_multimodal_generation.py",
+    "title": "Multimodal generation: an image ingested as a citable descriptor chunk, offline and deterministic",
+    "required_keys": [
+      "mode",
+      "image_document_ingested",
+      "descriptor_text",
+      "image_ref_present",
+      "image_chunk_cited",
+      "citation_resolves_to_stored_chunk",
+      "raw_image_not_cited",
+      "deterministic_descriptor_ok",
+      "text_only_columns_null",
+      "text_only_control_grounded",
+      "text_only_cache_hit",
+      "features_exercised"
+    ]
+  },
+  {
+    "script": "21_sandboxed_code_rlm.py",
+    "title": "Sandboxed code in the bounded RLM: safe by default, governed and executed only when opted in",
+    "required_keys": [
+      "default_deny_answer_identical",
+      "default_deny_sandbox",
+      "default_deny_step_denied",
+      "default_deny_nothing_executed",
+      "sandbox_name",
+      "citations_present",
+      "governed_executed_value",
+      "governed_fed_forward_value",
+      "over_ceiling_denied",
+      "escape_attempt_refused",
+      "audit_step_count"
+    ]
+  },
+  {
+    "script": "22_authorization_aware_evidence.py",
+    "title": "Authorization-aware evidence: per-principal ACL isolation over one corpus",
+    "required_keys": [
+      "mode",
+      "policy",
+      "alice_retrieves_only_alpha",
+      "bob_retrieves_only_bravo",
+      "alice_cites_only_alpha",
+      "bob_cites_only_bravo",
+      "alice_answer_excludes_bravo_body",
+      "bob_answer_excludes_alpha_body",
+      "cross_principal_disjoint",
+      "citations_resolve_to_stored_chunks",
+      "no_principal_sees_both_documents",
+      "no_principal_union_of_principals",
+      "no_policy_runtime_sees_both",
+      "no_principal_matches_no_policy_default"
+    ]
+  },
+  {
+    "script": "23_governed_tool_approval.py",
+    "title": "Governed tool with a durable single-use human approval",
+    "required_keys": [
+      "approval_id_present",
+      "denied_without_approval",
+      "authorized_once",
+      "second_run_denied",
+      "single_use_consumed",
+      "skill_call_count"
+    ]
+  },
+  {
+    "script": "24_governed_model_routing.py",
+    "title": "Governed model routing: over-classified evidence is refused generation before it reaches the model",
+    "required_keys": [
+      "mode",
+      "ceiling",
+      "public_answer_generated",
+      "public_answer_cites",
+      "public_citations_resolve",
+      "confidential_refused",
+      "confidential_citations_empty",
+      "confidential_marker_absent_from_answer",
+      "refusal_message_is_generic",
+      "control_unrouted_confidential_generates"
+    ]
+  },
+  {
+    "script": "26_audit_and_provenance.py",
+    "title": "Enterprise audit trail: a redacted per-query event, approval lifecycle events, and durable at-least-once delivery",
+    "required_keys": [
+      "mode",
+      "query_event_emitted",
+      "query_event_is_redacted",
+      "approval_granted_event",
+      "approval_cancelled_event",
+      "durable_persists_not_inline",
+      "durable_delivers_once",
+      "no_secret_in_any_event"
+    ]
+  },
+  {
+    "script": "27_durable_job_freshness.py",
+    "title": "Durable RLM job identity freshness: enqueue-time snapshot re-resolved at execution, admit when fresh and refuse when scope changed",
+    "required_keys": [
+      "mode",
+      "snapshot_captured_server_side",
+      "snapshot_is_redacted",
+      "fresh_job_admitted",
+      "fresh_emits_reresolved_event",
+      "fresh_cites_only_authorized",
+      "fresh_answer_excludes_forbidden_marker",
+      "forbidden_doc_dominates_without_policy",
+      "scope_changed_refused",
+      "scope_changed_emits_refused_event",
+      "scope_changed_serves_no_evidence",
+      "no_secret_in_any_event"
+    ]
+  },
+  {
+    "script": "28_enterprise_governance.py",
+    "title": "Enterprise governance end to end: authorization isolation, a classification-ceiling model router, and redacted audit composed on one governed runtime, with controls proving each guard is causal",
+    "required_keys": [
+      "mode",
+      "ceiling",
+      "alice_cites_only_alpha",
+      "bob_cites_only_bravo",
+      "cross_principal_disjoint",
+      "alice_answer_excludes_bravo",
+      "bob_answer_excludes_alpha",
+      "alice_authorized_but_router_refuses",
+      "refused_citations_empty",
+      "refused_marker_absent",
+      "refusal_message_is_generic",
+      "bob_denied_restricted_evidence",
+      "audit_event_per_served_query",
+      "audit_events_redacted",
+      "control_unrouted_surfaces_restricted_marker",
+      "control_no_policy_sees_both_documents"
+    ]
+  },
+  {
+    "script": "29_custom_chunking_strategy.py",
+    "title": "Custom chunking strategy: inject, byte-identity, composition",
+    "required_keys": [
+      "custom_strategy_id",
+      "custom_chunk_count",
+      "custom_matches_sentences",
+      "builtin_flat_byte_identical",
+      "composed_answer_grounded",
+      "unknown_strategy_refused"
+    ]
+  }
+]

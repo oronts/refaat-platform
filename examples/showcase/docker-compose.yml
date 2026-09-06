@@ -1,0 +1,21 @@
+# One service, one image, one data volume. No pgvector, no postgres, no redis, no
+# search cluster. Build from the repository root:
+#   docker compose -f examples/showcase/docker-compose.yml up --build
+services:
+  terminal:
+    build:
+      context: ../..
+      dockerfile: examples/showcase/Dockerfile
+    image: oronts-terminal:latest
+    ports:
+      - "8000:8000"
+    environment:
+      DATA_DIR: /data
+      # Uncomment to switch generation and embeddings to a real model.
+      # REFAAT_OPENAI_API_KEY: ${REFAAT_OPENAI_API_KEY}
+    volumes:
+      - terminal-data:/data
+    restart: unless-stopped
+
+volumes:
+  terminal-data:
