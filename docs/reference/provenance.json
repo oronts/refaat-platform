@@ -1,0 +1,11 @@
+{
+  "generated_from": [
+    "pyproject.toml",
+    "docs/reference/sbom.json"
+  ],
+  "requires_python": ">=3.12",
+  "sbom_sha256": "sha256:66a5a489d45b06def79c5ce9999a035ce92edf099442612b6ee8c049b5adb4a0",
+  "schema": "refaat-provenance-1",
+  "subject_name": "refaat",
+  "subject_version": "0.1.0"
+}

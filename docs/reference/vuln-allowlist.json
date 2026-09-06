@@ -1,0 +1,12 @@
+{
+  "schema": "refaat-vuln-allowlist-1",
+  "accepted": [
+    {
+      "id": "PYSEC-2026-3740",
+      "package": "nltk",
+      "reason": "Transitive dependency of the optional llama-index integration only; Refaat imports no nltk module and never calls the affected model-persistence APIs (TransitionParser, AveragedPerceptron, PerceptronTagger, save_maxent_params) nor enables nltk pathsec with untrusted model paths. No patched nltk release exists yet; re-review when one ships.",
+      "accepted_on": "2026-09-02",
+      "expires": "2026-12-01"
+    }
+  ]
+}
