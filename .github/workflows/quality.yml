@@ -33,7 +33,7 @@ jobs:
         run: uv run ./scripts/quality.sh
       - name: Upload quality evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: quality-${{ matrix.python-version }}
           path: |
@@ -122,7 +122,7 @@ jobs:
       - uses: azure/setup-helm@v4
       - run: helm lint deploy/helm/refaat --strict
       - run: helm template refaat deploy/helm/refaat --namespace refaat > rendered.yaml
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: rendered-helm
           path: rendered.yaml
