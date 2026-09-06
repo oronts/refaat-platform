@@ -1,0 +1,129 @@
+site_name: Refaat
+site_description: Retrieval & Evidence Foundation for Adaptive Agentic Tooling
+site_url: https://oronts.github.io/refaat/
+repo_url: https://github.com/oronts/refaat
+repo_name: oronts/refaat
+copyright: Copyright &copy; 2026 Oronts
+strict: true
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.instant
+    - navigation.top
+    - content.code.copy
+    - content.tabs.link
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+nav:
+  - Home: index.md
+  - Start:
+      - Getting started: getting-started.md
+      - Runnable examples: examples.md
+      - Meaning and naming: naming.md
+      - Product boundary: product-boundary.md
+      - Configuration: configuration.md
+      - Model providers: providers.md
+  - Architecture and concepts:
+      - Architecture: architecture.md
+      - Adaptive RAG, CAG, KAG, and GraphRAG: adaptive-context.md
+      - Streaming responses: streaming.md
+      - Reranking: reranking.md
+      - Hierarchical retrieval (RAPTOR): raptor.md
+      - Ingestion and extraction: ingestion.md
+      - Sessions, memory, and preferences: sessions-and-memory.md
+      - Bounded RLM and autonomy: rlm-and-autonomy.md
+      - Sandboxed code in the RLM: sandboxed-rlm.md
+      - Durable agents and jobs: agents-and-jobs.md
+      - Harness learning and rollback: harness.md
+      - Evaluations: evaluations.md
+      - Typed programs and artifacts: programs.md
+      - Program evaluation: program-evaluation.md
+      - Program optimization: program-optimization.md
+      - Program registry and promotion: program-registry.md
+      - Governed fine-tuning: fine-tuning.md
+      - Multimodal generation: multimodal.md
+      - Model-call cache and budgeting: model-cache.md
+      - Cache backends (Redis): cache-backends.md
+      - Data-classification model routing: model-routing.md
+      - Output governance: output-governance.md
+      - Generation-evidence egress redaction: egress-redaction.md
+      - Execution resilience: resilience.md
+      - Degradation on provider outage: degradation.md
+  - Enterprise and governance:
+      - Enterprise foundation: enterprise-foundation.md
+      - Authorization: authorization.md
+      - Access and multi-tenancy: access-and-multitenancy.md
+      - Tool governance: tool-governance.md
+      - Execution-time secrets: execution-time-secrets.md
+      - Plugin outbound HTTP: plugin-outbound.md
+      - Plugin pinning: plugin-pinning.md
+      - Prompt-injection posture: injection-posture.md
+      - Approvals: approvals.md
+      - Identity lifecycle: identity-lifecycle.md
+      - Audit and provenance: audit-and-provenance.md
+      - Right to erasure: erasure.md
+      - Legal holds: legal-holds.md
+      - Kill switches: kill-switches.md
+      - Quotas and cost governance: quotas.md
+      - Admin status plane: admin-status.md
+      - Learning and preferences: learning-and-preferences.md
+  - Guides:
+      - Extending Refaat: extending.md
+      - Production RAG: guides/production-rag.md
+      - GraphRAG: guides/graphrag.md
+      - Multimodal ingestion: guides/multimodal.md
+      - Custom extensions: guides/custom-extensions.md
+      - Custom chunking: guides/custom-chunking.md
+      - Custom search backend: guides/custom-search-backend.md
+      - Authoring a plugin: guides/authoring-a-plugin.md
+      - Connectors: connectors.md
+      - Plugins and executable skills: plugins-and-skills.md
+      - Agentic tools and function calling: agentic-tools.md
+      - Model Context Protocol: mcp.md
+      - Framework integrations: framework-integrations.md
+      - Reference application: reference-app.md
+  - Reference:
+      - Ports catalog: reference/ports-catalog.md
+      - Public surfaces overview: api-and-sdk.md
+      - Python API: reference/python-api.md
+      - HTTP API and OpenAPI: reference/http-api.md
+      - API compatibility contract: reference/api-compatibility.md
+      - Supply chain and SBOM: reference/supply-chain.md
+      - Performance benchmarks: reference/benchmarks.md
+      - CLI: reference/cli.md
+      - Events and outbox: reference/events.md
+      - Data model: reference/data-model.md
+      - Errors: reference/errors.md
+  - Production:
+      - Security model: security.md
+      - Threat model: security/threat-model.md
+      - Deployment: deployment.md
+      - Deployment hardening: deployment-hardening.md
+      - Failure-injection assurance: assurance.md
+      - Operations and observability: operations.md
+      - Backup and restore: operations/backup-restore.md
+      - Upgrades: operations/upgrades.md
+      - Release gate: operations/release.md
+      - Operational runbooks: operations/runbooks.md
+      - Production checklist: production-checklist.md
+  - Development:
+      - Testing and evidence: testing.md
+      - Contributing: development/contributing.md
+      - Release process: development/release-process.md
+      - Roadmap and non-goals: roadmap.md
+  - Architecture decisions:
+      - Modular runtime: adr/0001-modular-runtime.md
+      - Canonical evidence contract: adr/0002-canonical-evidence-contract.md
+      - Bounded self-improvement: adr/0003-bounded-self-improvement.md
+      - Versioned cache isolation: adr/0004-versioned-cache-isolation.md
+      - Effective context cache fingerprint: adr/0005-effective-context-cache-fingerprint.md
