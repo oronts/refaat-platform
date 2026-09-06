@@ -1,0 +1,128 @@
+name: quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+      - name: Install quality dependencies
+        run: uv sync --extra dev --extra documents --extra docs
+      - name: Run release gate
+        run: uv run ./scripts/quality.sh
+      - name: Upload quality evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-${{ matrix.python-version }}
+          path: |
+            .quality/current
+            QUALITY_REPORT.md
+            .quality/current/dist
+
+  postgres:
+    name: PostgreSQL and pgvector
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_DB: refaat
+          POSTGRES_USER: refaat
+          POSTGRES_PASSWORD: refaat-test-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U refaat -d refaat"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: "3.13"
+      - run: uv sync --extra dev --extra documents --extra postgres
+      - name: Migrate PostgreSQL
+        env:
+          REFAAT_DATABASE_URL: postgresql+psycopg://refaat:refaat-test-password@127.0.0.1:5432/refaat
+          REFAAT_AUTO_CREATE_SCHEMA: "false"
+        run: uv run alembic upgrade head
+      - name: Run PostgreSQL contract tests
+        env:
+          REFAAT_TEST_POSTGRES_URL: postgresql+psycopg://refaat:refaat-test-password@127.0.0.1:5432/refaat
+        run: uv run pytest -m postgres -vv
+
+  container:
+    name: Container and Compose
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Validate Compose model
+        env:
+          POSTGRES_PASSWORD: ci-postgres-password-000000
+          REDIS_PASSWORD: ci-redis-password-000000000
+          OBJECT_STORE_SECRET_ACCESS_KEY: ci-object-store-password-000000
+          REFAAT_API_KEY_PEPPER: ci-api-key-pepper-000000000000
+          REFAAT_BOOTSTRAP_TOKEN: ci-bootstrap-token-00000000000
+        run: docker compose config --quiet
+      - name: Build image
+        run: docker build --pull --tag refaat:${{ github.sha }} .
+      - name: Verify image identity and import
+        run: >-
+          docker run --rm --entrypoint python refaat:${{ github.sha }}
+          -c "import refaat; print(refaat.__version__)"
+      - name: Run Compose health smoke
+        env:
+          POSTGRES_PASSWORD: ci-postgres-password-000000
+          REDIS_PASSWORD: ci-redis-password-000000000
+          OBJECT_STORE_SECRET_ACCESS_KEY: ci-object-store-password-000000
+          REFAAT_API_KEY_PEPPER: ci-api-key-pepper-000000000000
+          REFAAT_BOOTSTRAP_TOKEN: ci-bootstrap-token-00000000000
+          REFAAT_IMAGE: refaat:${{ github.sha }}
+        run: |
+          docker compose up --detach --no-build
+          curl --fail --retry 30 --retry-delay 2 --retry-all-errors \
+            http://127.0.0.1:8000/health/ready
+      - name: Collect Compose logs
+        if: failure()
+        run: docker compose logs --no-color
+      - name: Stop Compose stack
+        if: always()
+        run: docker compose down --volumes --remove-orphans
+
+  helm:
+    name: Helm chart
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - run: helm lint deploy/helm/refaat --strict
+      - run: helm template refaat deploy/helm/refaat --namespace refaat > rendered.yaml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rendered-helm
+          path: rendered.yaml

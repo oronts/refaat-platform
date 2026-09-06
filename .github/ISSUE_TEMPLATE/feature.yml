@@ -1,0 +1,26 @@
+name: Feature proposal
+description: Propose a focused capability or adapter
+title: "proposal: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the user or operator problem without prescribing an implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Proposed boundary
+      description: Explain whether this belongs in the core, a typed port, an adapter, a plugin, or documentation.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Acceptance evidence
+      description: Tests, evaluations, measurements, or interoperability behavior that would prove completion.
+    validations:
+      required: true

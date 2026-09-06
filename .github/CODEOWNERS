@@ -1,0 +1,6 @@
+* @oronts
+/src/refaat/domain/ @oronts
+/src/refaat/application/ @oronts
+/migrations/ @oronts
+/deploy/ @oronts
+/.github/workflows/ @oronts

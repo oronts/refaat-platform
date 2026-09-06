@@ -1,0 +1,25 @@
+include .dockerignore
+include .editorconfig
+include .env.example
+include .pre-commit-config.yaml
+include CHANGELOG.md
+include CODE_OF_CONDUCT.md
+include CONTRIBUTING.md
+include Dockerfile
+include LICENSE
+include Makefile
+include NOTICE
+include README.md
+include SECURITY.md
+include SOURCE_MANIFEST.sha256
+include alembic.ini
+include compose.yaml
+include mkdocs.yml
+
+recursive-include .github *.md *.yml
+recursive-include deploy *
+recursive-include docs *.json *.md
+recursive-include examples *.json *.jsonl *.md *.py
+recursive-include migrations *.py
+recursive-include scripts *.py *.sh
+recursive-include tests *.py

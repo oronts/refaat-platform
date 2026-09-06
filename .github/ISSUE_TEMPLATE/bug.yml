@@ -1,0 +1,32 @@
+name: Bug report
+description: Report a reproducible defect without sensitive customer data
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include credentials, private documents, personal data, or exploitable security details. Use SECURITY.md for vulnerabilities.
+  - type: input
+    id: version
+    attributes:
+      label: Refaat version
+    validations:
+      required: true
+  - type: dropdown
+    id: backend
+    attributes:
+      label: Deployment backend
+      options: [SQLite local, PostgreSQL/pgvector, Other]
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Minimal configuration, commands, request, expected behavior, and actual behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: traces
+    attributes:
+      label: Sanitized logs and trace IDs
