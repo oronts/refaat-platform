@@ -45,11 +45,11 @@ dependencies = [
 
 [project.optional-dependencies]
 postgres = ["pgvector>=0.3.6,<1", "psycopg[binary]>=3.2,<4"]
-opensearch = ["opensearch-py>=2,<3"]
-redis = ["redis>=5.2,<7"]
+opensearch = ["opensearch-py>=2,<4"]
+redis = ["redis>=5.2,<9"]
 s3 = ["boto3>=1.35,<2"]
 documents = ["beautifulsoup4>=4.12,<5", "pypdf>=5.1,<7", "python-docx>=1.1,<2"]
-media = ["faster-whisper>=1.1,<2", "pillow>=11,<13", "pytesseract>=0.3.13,<1"]
+media = ["faster-whisper>=1.1,<2", "pillow>=11,<14", "pytesseract>=0.3.13,<1"]
 otel = [
   "opentelemetry-api>=1.29,<2",
   "opentelemetry-exporter-otlp-proto-grpc>=1.29,<2",
@@ -59,7 +59,7 @@ otel = [
   "opentelemetry-sdk>=1.29,<2",
 ]
 integrations = ["langchain-core>=0.3,<2", "llama-index-core>=0.12,<1"]
-mcp = ["mcp>=1.0,<2"]
+mcp = ["mcp>=1.0,<3"]
 server = [
   "beautifulsoup4>=4.12,<5",
   "boto3>=1.35,<2",
@@ -73,20 +73,20 @@ server = [
   "psycopg[binary]>=3.2,<4",
   "pypdf>=5.1,<7",
   "python-docx>=1.1,<2",
-  "redis>=5.2,<7",
+  "redis>=5.2,<9",
 ]
 dev = [
   "build>=1.2,<2",
   "coverage[toml]>=7.6,<8",
   "jsonschema>=4.23,<5",
   "langgraph>=1.0.10,<2",
-  "mypy>=1.13,<2",
+  "mypy>=1.13,<3",
   "pip-audit>=2.7,<3",
   "pytest>=8.3,<10",
   "pytest-asyncio>=0.25,<2",
   "pytest-cov>=6,<8",
   "pyyaml>=6,<7",
-  "reportlab>=4.2,<5",
+  "reportlab>=4.2,<6",
   "ruff>=0.9,<1",
 ]
 docs = ["mkdocs-material>=9.6,<10"]
